@@ -1,7 +1,7 @@
 #include "boid_manager.h"
 #include <stdio.h>
 
-/* The spatial hashgrid implementation is inspired from the java script implementation from Ten Minute Physics
+/* The hashgrid implementation is inspired of the java script implementation from Ten Minute Physics.
  * Reference:
  * Github: https://github.com/matthias-research/pages/blob/master/tenMinutePhysics/11-hashing.html
  * Pdf about the data structure: https://matthias-research.github.io/pages/tenMinutePhysics/11-hashing.pdf
@@ -151,16 +151,16 @@ void DrawBoids(const Boids* boids) {
 void UpdateBoids(Boids* boids) {
     if (!boids || !boids->grid) return;
 
-    // Reset neighbor stats
+    // Reset neighbor stats in O(n)
     for (u32 i = 0; i < boids->num_boids; i++) {
         ResetAvgsBoid(&boids->boids[i]);
     }
 
-    // Rebuild hash-grid 
+    // Rebuild hash grid in O(n)
     ReCreateGrid(boids->grid, boids);
 
-    // Search neighbors, should run in O(n * k),
-    // where k is the average neighbor number 
+    // It's okayish fast, but definetly faster than the naive O(n^2) solution :D
+    // Should run in O(n * k), where k is the average neighbor number 
     for (u32 i = 0; i < boids->num_boids; i++) {
         Boid* boid = &boids->boids[i];
 
@@ -184,7 +184,7 @@ void UpdateBoids(Boids* boids) {
         }
     }
 
-    // Upate boid
+    // Update boid
     for (u32 i = 0; i < boids->num_boids; i++) {
         UpdateBoid(&boids->boids[i]);
     }
